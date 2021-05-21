@@ -32,14 +32,6 @@ def callback():
         abort(400)
     return 'OK'
 
-'''
-# 處理訊息
-@handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    message = TextSendMessage(text=event.message.text)
-    line_bot_api.reply_message(event.reply_token, message)
-'''
-
 def MakePaperScissorsStone(text):
     # 石頭：0, 布：1, 剪刀：2
     if text=="石頭！":
