@@ -93,7 +93,8 @@ def handle_message(event):
         IntroductionMsg=MakeIntroduction()
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text=IntroductionMsg))
+            TextSendMessage(text=IntroductionMsg),
+            StickerSendMessage(package_id=1, sticker_id=2))
         
     elif cmd[0] == "猜拳":
         line_bot_api.reply_message(
