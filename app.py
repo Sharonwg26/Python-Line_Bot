@@ -57,9 +57,9 @@ def MakeWeb():
 
 def MakePaperScissorsStone(text):
     # 石頭：0, 布：1, 剪刀：2
-    if text=="石頭！":
+    if text=="石頭👊！":
         player=0
-    elif text=="布！":
+    elif text=="布✋！":
         player=1
     else:
         player=2
@@ -68,31 +68,32 @@ def MakePaperScissorsStone(text):
     
     # 電腦：石頭, 玩家：布
     if opponent==0 and player==1:
-        msg='我出石頭，你出布！\n你贏了.. ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡'
+        msg='我出👊，你出✋！\n你贏了.. ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡'
     # 電腦：石頭, 玩家：剪刀
     elif opponent==0 and player==2:
-        msg='我出石頭，你出剪刀！\n我贏啦(●ˊωˋ●)ゞ'
+        msg='我出👊，你出✌️！\n我贏啦(●ˊωˋ●)ゞ'
     # 電腦：布, 玩家：石頭
     elif opponent==1 and player==0:
-        msg='我出布，你出石頭！\n我贏啦(●ˊωˋ●)ゞ'
+        msg='我出✋，你出👊！\n我贏啦(●ˊωˋ●)ゞ'
     # 電腦：布, 玩家：剪刀
     elif opponent==1 and player==2:
-        msg='我出布，你出剪刀！\n你贏了.. ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡'
+        msg='我出✋，你出✌️！\n你贏了.. ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡'
     # 電腦：剪刀, 玩家：石頭
     elif opponent==2 and player==0:
-        msg='我出剪刀，你出石頭！\n你贏了.. ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡'
+        msg='我出✌️，你出👊！\n你贏了.. ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡'
     # 電腦：剪刀, 玩家：布
     elif opponent==2 and player==1:
-        msg='我出剪刀，你出布！\n我贏啦(●ˊωˋ●)ゞ'
+        msg='我出✌️，你出✋！\n我贏啦(●ˊωˋ●)ゞ'
     else:
         if opponent==0:
-            msg='我們都出石頭！'
+            msg='我們都出👊！'
         elif opponent==1:
-            msg='我們都出布！'
+            msg='我們都出✋！'
         else:
-            msg='我們都出剪刀！'
+            msg='我們都出✌️！'
         msg+='\n這次平手啦～d(`･∀･)b'
     return msg
+
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
@@ -104,17 +105,13 @@ def handle_message(event):
         SendMsg=[TextSendMessage(text=IntroductionMsg),
                  StickerSendMessage(package_id=1, sticker_id=2)]
         line_bot_api.reply_message(event.reply_token, SendMsg)
-        '''
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=IntroductionMsg),
-            StickerSendMessage(package_id=1, sticker_id=2))
-        '''
+
     elif cmd[0] == "教學網站":
-        IntroductionMsg = MakeIntroduction()
+        WebMsg = MakeWeb()
         SendMsg = [TextSendMessage(text=IntroductionMsg),
                    StickerSendMessage(package_id=1, sticker_id=4)]
         line_bot_api.reply_message(event.reply_token, SendMsg)
+
     elif cmd[0] == "猜拳":
         line_bot_api.reply_message(
             event.reply_token,
@@ -123,20 +120,20 @@ def handle_message(event):
                 quick_reply=QuickReply(
                     items=[
                         QuickReplyButton(
-                            action=MessageAction(label="石頭", text="石頭！"),
+                            action=MessageAction(label="石頭", text="石頭👊！"),
                             image_url='https://eswarupkumar.github.io/Stone-Paper-Scissor/rock.png'
                         ),
                         QuickReplyButton(
-                            action=MessageAction(label="布", text="布！"),
+                            action=MessageAction(label="布", text="布✋！"),
                             image_url='https://eswarupkumar.github.io/Stone-Paper-Scissor/paper.png'
                         ),
                         QuickReplyButton(
-                            action=MessageAction(label="剪刀", text="剪刀！"),
+                            action=MessageAction(label="剪刀", text="剪刀✌️！"),
                             image_url='https://eswarupkumar.github.io/Stone-Paper-Scissor/scissors.png'
                         )
                     ])))
         
-    elif cmd[0] == "石頭！" or cmd[0] == "布！" or cmd[0] == "剪刀！":
+    elif cmd[0] == "石頭👊！" or cmd[0] == "布✋！" or cmd[0] == "剪刀✌️！":
         PaperScissorsStoneMsg=MakePaperScissorsStone(cmd[0])
         line_bot_api.reply_message(
             event.reply_token,
