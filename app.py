@@ -45,6 +45,16 @@ def MakeIntroduction():
     '猜拳'來和小幫手玩猜拳吧XD"
     return msg
 
+def MakeWeb():
+    msg="以下是中央大學相關的教育網站唷~\n\
+    1.ncueeclass: https://ncueeclass.ncu.edu.tw/ \n \
+    2.portal: https://portal.ncu.edu.tw/ \n \
+    以下是一些常用的遠距教學軟體哦： \n \
+    1.Google meeting: https://meet.google.com/ \n \
+    2.Zoom:  https://zoom.us/zh-tw/meetings.html  （雖然被Ban了，不過偶爾還是會使用到）    \n \
+    小幫手有幫到你嘛,嘻嘻ヾ(✿ﾟ▽ﾟ)ノ"
+    return msg
+
 def MakePaperScissorsStone(text):
     # 石頭：0, 布：1, 剪刀：2
     if text=="石頭！":
@@ -100,7 +110,11 @@ def handle_message(event):
             TextSendMessage(text=IntroductionMsg),
             StickerSendMessage(package_id=1, sticker_id=2))
         '''
-        
+    elif cmd[0] == "教學網站":
+        IntroductionMsg = MakeIntroduction()
+        SendMsg = [TextSendMessage(text=IntroductionMsg),
+                   StickerSendMessage(package_id=1, sticker_id=4)]
+        line_bot_api.reply_message(event.reply_token, SendMsg)
     elif cmd[0] == "猜拳":
         line_bot_api.reply_message(
             event.reply_token,
