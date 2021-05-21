@@ -32,6 +32,19 @@ def callback():
         abort(400)
     return 'OK'
 
+def MakeIntroduction():
+    msg="您好！我是疫情小幫手，您可以輸入以下關鍵字：\n\
+    '疫情'查看全台灣Covid-19疫情情況；\n \
+    '量體溫'輸入您的體溫，小幫手會為您記錄；\n \
+    '地區'查看您附近地區的Covid-19患者足跡；\n \
+    '篩檢站'查看全台灣的篩檢站和醫院；\n \
+    '疫苗'查看全台灣可施打疫苗的醫院；\n \
+    '保險'查看各公司防疫保單的相關訊息；\n \
+    '教學網站'查看中央大學相關的教育網站以及線上教學的軟體；\n \
+    '時間提醒'可以自定義時間和事件，小幫手會提醒您哦；\n \
+    '猜拳'來和小幫手玩猜拳吧XD"
+    return msg
+
 def MakePaperScissorsStone(text):
     # 石頭：0, 布：1, 剪刀：2
     if text=="石頭！":
@@ -76,8 +89,13 @@ def handle_message(event):
     # message = TextSendMessage(text=event.message.text)
     # cmd = message.split(" ")
     cmd = event.message.text.split(" ")
-    
-    if cmd[0] == "猜拳":
+    if cmd[0] == "介紹":
+        IntroductionMsg=MakeIntroduction()
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=IntroductionMsg))
+        
+    elif cmd[0] == "猜拳":
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(
