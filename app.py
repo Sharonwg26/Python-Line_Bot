@@ -1,5 +1,9 @@
 from flask import Flask, request, abort
 
+from bs4 import BeautifulSoup
+
+from abc import ABC, abstractmethod
+
 from linebot import (
     LineBotApi, WebhookHandler
 )
@@ -10,12 +14,16 @@ from linebot.models import *
 
 import random
 
+import requests
+
 app = Flask(__name__)
 
 # Channel Access Token
-line_bot_api = LineBotApi('OQqOlMprRqeiXhBHSymZ45X+i7WF74swYPh3nYpgcrVezoVQQ726Eqh2e0oBORceRt+brhEoSIC6W61E4H3bxGOg4Wp51V/XsG4QW4fIkPNrb/leolZ31igBf2WZd0cTnKS86EFUUWQy2TZNgHu6ugdB04t89/1O/w1cDnyilFU=')
+line_bot_api = LineBotApi(
+    'OQqOlMprRqeiXhBHSymZ45X+i7WF74swYPh3nYpgcrVezoVQQ726Eqh2e0oBORceRt+brhEoSIC6W61E4H3bxGOg4Wp51V/XsG4QW4fIkPNrb/leolZ31igBf2WZd0cTnKS86EFUUWQy2TZNgHu6ugdB04t89/1O/w1cDnyilFU=')
 # Channel Secret
 handler = WebhookHandler('69a5b0ff850e58d346a7695507d98177')
+
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -32,8 +40,9 @@ def callback():
         abort(400)
     return 'OK'
 
+
 def MakeIntroduction():
-    msg="您好！我是疫情小幫手，您可以輸入以下關鍵字：\n\
+    msg = "您好！我是疫情小幫手，您可以輸入以下關鍵字：\n\
     '疫情'查看全台灣Covid-19疫情情況；\n \
     '量體溫'輸入您的體溫，小幫手會為您記錄；\n \
     '地區'查看您附近地區的Covid-19患者足跡；\n \
@@ -45,8 +54,9 @@ def MakeIntroduction():
     '猜拳'來和小幫手玩猜拳吧XD"
     return msg
 
+
 def MakeWeb():
-    msg="以下是中央大學相關的教育網站唷~\n\
+    msg = "以下是中央大學相關的教育網站唷~\n\
     1.ncueeclass: https://ncueeclass.ncu.edu.tw/ \n \
     2.portal: https://portal.ncu.edu.tw/ \n \
     以下是一些常用的遠距教學軟體哦： \n \
@@ -55,43 +65,57 @@ def MakeWeb():
     小幫手有幫到你嘛,嘻嘻ヾ(✿ﾟ▽ﾟ)ノ"
     return msg
 
+
 def MakePaperScissorsStone(text):
     # 石頭：0, 布：1, 剪刀：2
-    if text=="石頭👊！":
-        player=0
-    elif text=="布✋！":
-        player=1
+    if text == "石頭！":
+        player = 0
+    elif text == "布！":
+        player = 1
     else:
-        player=2
-        
-    opponent=random.randint(0,2)
-    
+        player = 2
+
+    opponent = random.randint(0, 2)
+
     # 電腦：石頭, 玩家：布
-    if opponent==0 and player==1:
-        msg='我出👊，你出✋！\n你贏了.. ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡'
+    if opponent == 0 and player == 1:
+        msg = '我出石頭，你出布！\n你贏了.. ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡'
     # 電腦：石頭, 玩家：剪刀
-    elif opponent==0 and player==2:
-        msg='我出👊，你出✌️！\n我贏啦(●ˊωˋ●)ゞ'
+    elif opponent == 0 and player == 2:
+        msg = '我出石頭，你出剪刀！\n我贏啦(●ˊωˋ●)ゞ'
     # 電腦：布, 玩家：石頭
-    elif opponent==1 and player==0:
-        msg='我出✋，你出👊！\n我贏啦(●ˊωˋ●)ゞ'
+    elif opponent == 1 and player == 0:
+        msg = '我出布，你出石頭！\n我贏啦(●ˊωˋ●)ゞ'
     # 電腦：布, 玩家：剪刀
-    elif opponent==1 and player==2:
-        msg='我出✋，你出✌️！\n你贏了.. ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡'
+    elif opponent == 1 and player == 2:
+        msg = '我出布，你出剪刀！\n你贏了.. ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡'
     # 電腦：剪刀, 玩家：石頭
-    elif opponent==2 and player==0:
-        msg='我出✌️，你出👊！\n你贏了.. ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡'
+    elif opponent == 2 and player == 0:
+        msg = '我出剪刀，你出石頭！\n你贏了.. ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡'
     # 電腦：剪刀, 玩家：布
-    elif opponent==2 and player==1:
-        msg='我出✌️，你出✋！\n我贏啦(●ˊωˋ●)ゞ'
+    elif opponent == 2 and player == 1:
+        msg = '我出剪刀，你出布！\n我贏啦(●ˊωˋ●)ゞ'
     else:
-        if opponent==0:
-            msg='我們都出👊！'
-        elif opponent==1:
-            msg='我們都出✋！'
+        if opponent == 0:
+            msg = '我們都出石頭！'
+        elif opponent == 1:
+            msg = '我們都出布！'
         else:
-            msg='我們都出✌️！'
-        msg+='\n這次平手啦～d(`･∀･)b'
+            msg = '我們都出剪刀！'
+        msg += '\n這次平手啦～d(`･∀･)b'
+    return msg
+
+
+def MakeCov():
+    response = request.get("https://voice.baidu.com/act/newpneumonia/newpneumonia/?from=osari_aladin_banner")
+    soup = BeautifulSoup(response.content, "html.parser")
+    rigion = "台灣"
+    newly_increased = soup.find('td', {'class': 'VirusTable_1-1-303_3x1sDV VirusTable_1-1-303_2bK5NN'}).getText()
+    #existing = soup.find('td', {'class': 'VirusTable_1-1-303_3x1sDV'}).getText()
+    #accumulation = soup.find('td', {'class': 'VirusTable_1-1-303_3x1sDV'}).getText()
+    #cured = soup.find('td', {'class': 'VirusTable_1-1-303_EjGi8c'}).getText()
+    #dead = soup.find('td', {'class': 'VirusTable_1-1-303_EjGi8c'}).getText()
+    msg = f"{rigion}今天新增新冠疫情確診病例{newly_increased}例。"#\n目前台灣地區共有新冠病例{accumulation}例；\n現存新冠病例{existing}例；\n治愈新冠病例{cured}例；\n死亡病例{dead}例。\n 小幫手提醒您：\n 1.保持社交距離\n2.勤洗手，隨時戴口罩\n3.完成實聯登記\n4.盡速接種疫苗\n保持防疫措施，人人有責唷~"
     return msg
 
 
@@ -101,14 +125,19 @@ def handle_message(event):
     # cmd = message.split(" ")
     cmd = event.message.text.split(" ")
     if cmd[0] == "介紹":
-        IntroductionMsg=MakeIntroduction()
-        SendMsg=[TextSendMessage(text=IntroductionMsg),
-                 StickerSendMessage(package_id=1, sticker_id=2)]
+        IntroductionMsg = MakeIntroduction()
+        SendMsg = [TextSendMessage(text=IntroductionMsg),
+                   StickerSendMessage(package_id=1, sticker_id=2)]
         line_bot_api.reply_message(event.reply_token, SendMsg)
-
+        '''
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=IntroductionMsg),
+            StickerSendMessage(package_id=1, sticker_id=2))
+        '''
     elif cmd[0] == "教學網站":
-        WebMsg = MakeWeb()
-        SendMsg = [TextSendMessage(text=WebMsg),
+        IntroductionMsg = MakeWeb()
+        SendMsg = [TextSendMessage(text=IntroductionMsg),
                    StickerSendMessage(package_id=1, sticker_id=4)]
         line_bot_api.reply_message(event.reply_token, SendMsg)
 
@@ -120,32 +149,39 @@ def handle_message(event):
                 quick_reply=QuickReply(
                     items=[
                         QuickReplyButton(
-                            action=MessageAction(label="石頭", text="石頭👊！"),
+                            action=MessageAction(label="石頭", text="石頭！"),
                             image_url='https://eswarupkumar.github.io/Stone-Paper-Scissor/rock.png'
                         ),
                         QuickReplyButton(
-                            action=MessageAction(label="布", text="布✋！"),
+                            action=MessageAction(label="布", text="布！"),
                             image_url='https://eswarupkumar.github.io/Stone-Paper-Scissor/paper.png'
                         ),
                         QuickReplyButton(
-                            action=MessageAction(label="剪刀", text="剪刀✌️！"),
+                            action=MessageAction(label="剪刀", text="剪刀！"),
                             image_url='https://eswarupkumar.github.io/Stone-Paper-Scissor/scissors.png'
                         )
                     ])))
-        
-    elif cmd[0] == "石頭👊！" or cmd[0] == "布✋！" or cmd[0] == "剪刀✌️！":
-        PaperScissorsStoneMsg=MakePaperScissorsStone(cmd[0])
+
+    elif cmd[0] == "石頭！" or cmd[0] == "布！" or cmd[0] == "剪刀！":
+        PaperScissorsStoneMsg = MakePaperScissorsStone(cmd[0])
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=PaperScissorsStoneMsg))
-        
+
+    elif cmd[0] == "疫情":
+        IntroductionMsg = MakeCov()
+        SendMsg = [TextSendMessage(text=IntroductionMsg)]
+        line_bot_api.reply_message(event.reply_token, SendMsg)
+
     else:
         else_msg = '幹嘛o( ˋωˊ )o'
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=else_msg))
-        
+
+
 import os
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
