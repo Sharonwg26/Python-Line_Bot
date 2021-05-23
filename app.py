@@ -103,7 +103,7 @@ def GetGlobalPandemic():
     url ='https://spreadsheets.google.com/feeds/cells/1UVnq9a1zVIfygplsbOjOtMX2Bu6aUfet1PwN3MOM7bk/1/public/full?alt=json'
     reqsjson = requests.get(url).json()
     reqsjson = reqsjson["feed"]["entry"]
-    globalpandemic = "全球確診： "+str(format(int(reqsjson[5]["gs$cell"]["inputValue"]),','))+"\n死亡： "+str(format(int(reqsjson[6]["gs$cell"]["inputValue"]),','))
+    globalpandemic = "全球確診："+str(format(int(reqsjson[5]["gs$cell"]["inputValue"]),','))+"\n死亡："+str(format(int(reqsjson[6]["gs$cell"]["inputValue"]),','))
     return globalpandemic
 
 # 台灣疫情
@@ -115,7 +115,7 @@ def GetTaiwanPandemic():
     # 台灣累計本土確診 reqsjson[67]["gs$cell"]["inputValue"]
     # 台灣累計境外移入 reqsjson[69]["gs$cell"]["inputValue"]
     # 台灣累計死亡 reqsjson[79]["gs$cell"]["inputValue"]
-    taiwanpandemic = "台灣累計確診： "+reqsjson[11]["gs$cell"]["inputValue"]+"\n本土案例： "+reqsjson[67]["gs$cell"]["inputValue"]+"\n境外移入"+reqsjson[69]["gs$cell"]["inputValue"]+"\n死亡"+reqsjson[79]["gs$cell"]["inputValue"]
+    taiwanpandemic = "台灣累計確診："+reqsjson[11]["gs$cell"]["inputValue"]+"\n本土案例："+reqsjson[67]["gs$cell"]["inputValue"]+"\n境外移入："+reqsjson[69]["gs$cell"]["inputValue"]+"\n死亡："+reqsjson[79]["gs$cell"]["inputValue"]
     return taiwanpandemic
 
 # 今日台灣疫情
@@ -205,7 +205,7 @@ def handle_message(event):
     elif cmd[0]== "縣市疫情":
         CityPandemicMsg = GetCityPandemic(cmd[1])
         if CityPandemicMsg != "輸入錯誤，請重新輸入。\n（縣市名後請務必加上「縣/市」）":
-            CityPandemicMsg = cmd[1]+": "+CityPandemicMsg+"例"
+            CityPandemicMsg = cmd[1]+":"+CityPandemicMsg+"例"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=CityPandemicMsg))
