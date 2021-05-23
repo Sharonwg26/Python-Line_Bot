@@ -205,7 +205,7 @@ def handle_message(event):
     elif cmd[0]== "縣市疫情":
         CityPandemicMsg = GetCityPandemic(cmd[1])
         if CityPandemicMsg != "輸入錯誤，請重新輸入。\n（縣市名後請務必加上「縣/市」）":
-            CityPandemicMsg = cmd[1]+":"+CityPandemicMsg+"例"
+            CityPandemicMsg = cmd[1]+"："+CityPandemicMsg+"例"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=CityPandemicMsg))
