@@ -36,9 +36,11 @@ def callback():
 
 def MakeIntroduction():
     msg="您好！我是疫情小幫手，您可以輸入以下關鍵字：\n\
-    '疫情'查看全台灣Covid-19疫情情況；\n \
+    '全球疫情'查看全球Covid-19疫情；\n \
+    '台灣疫情'查看台灣Covid-19疫情；\n \
+    '今日疫情'查看台灣今日Covid-19疫情；\n \
+    '縣市疫情 縣市名'查看您輸入地區的Covid-19疫情；\n \
     '量體溫'輸入您的體溫，小幫手會為您記錄；\n \
-    '本土疫情 縣市名'查看您輸入地區的Covid-19疫情；\n \
     '篩檢站'查看全台灣的篩檢站和醫院；\n \
     '疫苗'查看全台灣可施打疫苗的醫院；\n \
     '保險'查看各公司防疫保單的相關訊息；\n \
@@ -96,21 +98,48 @@ def MakePaperScissorsStone(text):
         msg+='\n這次平手啦～d(`･∀･)b'
     return msg
 
+# 全球疫情
+def GetGlobalPandemic():
+    url ='https://spreadsheets.google.com/feeds/cells/1UVnq9a1zVIfygplsbOjOtMX2Bu6aUfet1PwN3MOM7bk/1/public/full?alt=json'
+    reqsjson = requests.get(url).json()
+    reqsjson = reqsjson["feed"]["entry"]
+    globalpandemic = "全球確診： "+str(format(int(reqsjson[5]["gs$cell"]["inputValue"]),','))+"\n死亡： "+str(format(int(reqsjson[6]["gs$cell"]["inputValue"]),','))
+    return globalpandemic
+
+# 台灣疫情
+def GetTaiwanPandemic():
+    url ='https://spreadsheets.google.com/feeds/cells/1UVnq9a1zVIfygplsbOjOtMX2Bu6aUfet1PwN3MOM7bk/1/public/full?alt=json'
+    reqsjson = requests.get(url).json()
+    reqsjson = reqsjson["feed"]["entry"]
+    # 台灣累計確診 reqsjson[11]["gs$cell"]["inputValue"]
+    # 台灣累計本土確診 reqsjson[67]["gs$cell"]["inputValue"]
+    # 台灣累計境外移入 reqsjson[69]["gs$cell"]["inputValue"]
+    # 台灣累計死亡 reqsjson[79]["gs$cell"]["inputValue"]
+    taiwanpandemic = "台灣累計確診： "+reqsjson[11]["gs$cell"]["inputValue"]+"\n本土案例： "+reqsjson[67]["gs$cell"]["inputValue"]+"\n境外移入"+reqsjson[69]["gs$cell"]["inputValue"]+"\n死亡"+reqsjson[79]["gs$cell"]["inputValue"]
+    return taiwanpandemic
+
+# 今日台灣疫情
+def GetTodayPandemic():
+    url ='https://spreadsheets.google.com/feeds/cells/1UVnq9a1zVIfygplsbOjOtMX2Bu6aUfet1PwN3MOM7bk/1/public/full?alt=json'
+    reqsjson = requests.get(url).json()
+    reqsjson = reqsjson["feed"]["entry"]
+    todaypandemic = "今日新增："+reqsjson[13]["gs$cell"]["inputValue"]+"\n本土案例："+reqsjson[15]["gs$cell"]["inputValue"]+"\n境外移入："+reqsjson[17]["gs$cell"]["inputValue"]
+    return todaypandemic
+
+# 台灣縣市累計確診
 def GetCityPandemic(city):
     url ='https://spreadsheets.google.com/feeds/cells/1UVnq9a1zVIfygplsbOjOtMX2Bu6aUfet1PwN3MOM7bk/1/public/full?alt=json'
     reqsjson = requests.get(url).json()
     reqsjson = reqsjson["feed"]["entry"]
-    target_city = "輸入錯誤，請重新輸入。\
-        （縣市名後請務必加上「縣/市」）"
-    index=0
+    target_city = "輸入錯誤，請重新輸入。\n（縣市名後請務必加上「縣/市」）"
+    index = 0
     
     for item in reqsjson:
             if item["gs$cell"]["inputValue"] == city:
-                target_city = item
-                break
-            index+=1
-            
-    return reqsjson[index+1]["gs$cell"]["inputValue"]
+                return reqsjson[index+1]["gs$cell"]["inputValue"]
+            index += 1
+
+    return target_city
 
 
 @handler.add(MessageEvent, message=TextMessage)
@@ -150,14 +179,33 @@ def handle_message(event):
                     ])))
         
     elif cmd[0] == "石頭👊！" or cmd[0] == "布✋！" or cmd[0] == "剪刀✌️！":
-        PaperScissorsStoneMsg=MakePaperScissorsStone(cmd[0])
+        PaperScissorsStoneMsg = MakePaperScissorsStone(cmd[0])
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=PaperScissorsStoneMsg))
     
-    elif cmd[0]== "本土疫情":
-        CityPandemicMsg=GetCityPandemic(cmd[1])
-        CityPandemicMsg=cmd[1]+": "+CityPandemicMsg+"例"
+    elif cmd[0]== "全球疫情":
+        GlobalPandemicMsg = GetGlobalPandemic()
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=GlobalPandemicMsg))
+        
+    elif cmd[0]== "台灣疫情":
+        TaiwanPandemicMsg = GetTaiwanPandemic()
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=TaiwanPandemicMsg))
+        
+    elif cmd[0]== "今日疫情":
+        TodayPandemicMsg = GetTodayPandemic()
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=TodayPandemicMsg))
+        
+    elif cmd[0]== "縣市疫情":
+        CityPandemicMsg = GetCityPandemic(cmd[1])
+        if CityPandemicMsg != "輸入錯誤，請重新輸入。\n（縣市名後請務必加上「縣/市」）":
+            CityPandemicMsg = cmd[1]+": "+CityPandemicMsg+"例"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=CityPandemicMsg))
