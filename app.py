@@ -112,6 +112,7 @@ def GetCityPandemic(city):
             
     return reqsjson[index+1]["gs$cell"]["inputValue"]
 
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     cmd = event.message.text.split(" ")
@@ -120,13 +121,13 @@ def handle_message(event):
         SendMsg=[TextSendMessage(text=IntroductionMsg),
                  StickerSendMessage(package_id=1, sticker_id=2)]
         line_bot_api.reply_message(event.reply_token, SendMsg)
-
+        
     elif cmd[0] == "教學網站":
         WebMsg = MakeWeb()
         SendMsg = [TextSendMessage(text=WebMsg),
                    StickerSendMessage(package_id=1, sticker_id=4)]
         line_bot_api.reply_message(event.reply_token, SendMsg)
-
+        
     elif cmd[0] == "猜拳":
         line_bot_api.reply_message(
             event.reply_token,
