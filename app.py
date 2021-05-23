@@ -9,6 +9,8 @@ from linebot.exceptions import (
 from linebot.models import *
 
 import random
+import requests
+import json
 
 app = Flask(__name__)
 
@@ -36,7 +38,7 @@ def MakeIntroduction():
     msg="您好！我是疫情小幫手，您可以輸入以下關鍵字：\n\
     '疫情'查看全台灣Covid-19疫情情況；\n \
     '量體溫'輸入您的體溫，小幫手會為您記錄；\n \
-    '地區'查看您附近地區的Covid-19患者足跡；\n \
+    '本土疫情 縣市名'查看您輸入地區的Covid-19疫情；\n \
     '篩檢站'查看全台灣的篩檢站和醫院；\n \
     '疫苗'查看全台灣可施打疫苗的醫院；\n \
     '保險'查看各公司防疫保單的相關訊息；\n \
@@ -94,11 +96,24 @@ def MakePaperScissorsStone(text):
         msg+='\n這次平手啦～d(`･∀･)b'
     return msg
 
+def GetCityPandemic(city):
+    url ='https://spreadsheets.google.com/feeds/cells/1UVnq9a1zVIfygplsbOjOtMX2Bu6aUfet1PwN3MOM7bk/1/public/full?alt=json'
+    reqsjson = requests.get(url).json()
+    reqsjson = reqsjson["feed"]["entry"]
+    target_city = "輸入錯誤，請重新輸入。\
+        （縣市名後請務必加上「縣/市」）"
+    index=0
+    
+    for item in reqsjson:
+            if item["gs$cell"]["inputValue"] == city:
+                target_city = item
+                break
+            index+=1
+            
+    return reqsjson[index+1]["gs$cell"]["inputValue"]
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    # message = TextSendMessage(text=event.message.text)
-    # cmd = message.split(" ")
     cmd = event.message.text.split(" ")
     if cmd[0] == "介紹":
         IntroductionMsg=MakeIntroduction()
@@ -138,6 +153,13 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=PaperScissorsStoneMsg))
+    
+    elif cmd[0]== "本土疫情":
+        CityPandemicMsg=GetCityPandemic(cmd[1])
+        CityPandemicMsg=cmd[1]+": "+CityPandemicMsg+"例"
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=CityPandemicMsg))
         
     else:
         else_msg = '幹嘛o( ˋωˊ )o'
