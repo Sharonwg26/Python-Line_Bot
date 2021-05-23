@@ -158,6 +158,27 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, SendMsg)
         
     elif cmd[0] == "猜拳":
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(
+                text='剪刀石頭布！',
+                quick_reply=QuickReply(
+                    items=[
+                        QuickReplyButton(
+                            action=MessageAction(label="石頭", text="石頭👊！"),
+                            image_url='https://eswarupkumar.github.io/Stone-Paper-Scissor/rock.png'
+                        ),
+                        QuickReplyButton(
+                            action=MessageAction(label="布", text="布✋！"),
+                            image_url='https://eswarupkumar.github.io/Stone-Paper-Scissor/paper.png'
+                        ),
+                        QuickReplyButton(
+                            action=MessageAction(label="剪刀", text="剪刀✌️！"),
+                            image_url='https://eswarupkumar.github.io/Stone-Paper-Scissor/scissors.png'
+                        )
+                    ])))
+        
+    elif cmd[0] == "石頭👊！" or cmd[0] == "布✋！" or cmd[0] == "剪刀✌️！":
         SendMsg = MakePaperScissorsStone(cmd[0])+"\n\n再來一場嗎(*ˇωˇ*人)"
         line_bot_api.reply_message(
             event.reply_token,
@@ -182,12 +203,6 @@ def handle_message(event):
                             image_url='https://image.pngaaa.com/302/49302-middle.png'
                         )
                     ])))
-        
-    elif cmd[0] == "石頭👊！" or cmd[0] == "布✋！" or cmd[0] == "剪刀✌️！":
-        PaperScissorsStoneMsg = MakePaperScissorsStone(cmd[0])
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=PaperScissorsStoneMsg))
     
     elif cmd[0]== "不玩啦":
         ByeByeMsg="好吧( ˘•ω•˘ ) 下次見！"
