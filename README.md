@@ -31,7 +31,7 @@ heroku 有免費的方案，在架構上只要滿足其要求，往後的更動�
 2. 地區
    詢部分接收到訊息後確認待查詢縣市後依靠中央氣象局公開資料 API 擷取「36小時天氣預報資料」資訊，將我們要的縣市資訊抓出來再回覆給使用者。
 
-
+[新冠肺炎 COVID-19 疫苗接種院所查詢](https://tools.heho.com.tw/covid-19-vaccine/)
 ---
 
 ### Google YouTube API
@@ -87,7 +87,10 @@ heroku 有免費的方案，在架構上只要滿足其要求，往後的更動�
 ```
 OQqOlMprRqeiXhBHSymZ45X+i7WF74swYPh3nYpgcrVezoVQQ726Eqh2e0oBORceRt+brhEoSIC6W61E4H3bxGOg4Wp51V/XsG4QW4fIkPNrb/leolZ31igBf2WZd0cTnKS86EFUUWQy2TZNgHu6ugdB04t89/1O/w1cDnyilFU=
 ```
-
+3. [中央氣象局API授權碼](https://opendata.cwb.gov.tw/user/authkey)
+```
+CWB-E5F5EFC0-30D2-43E6-B9C5-DDC64B24FA74
+```
 ---
 
 ![](https://i.imgur.com/sFhZgIx.png)
