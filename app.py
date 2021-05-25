@@ -200,7 +200,7 @@ def handle_message(event):
             TextSendMessage(text=CityPandemicMsg))
         
     elif cmd[0] == "量體溫":
-        temperature=body_temperature(cmd[1])
+        temperature=body_temperature(float(cmd[1]))
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=temperature))
