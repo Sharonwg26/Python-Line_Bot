@@ -215,10 +215,10 @@ def handle_message(event):
         city = cmd[1]
         city = city.replace('台','臺')
         if(not (city in cities)):
-            line_bot_api.reply_message(reply_token,TextSendMessage(text="查詢格式為: 天氣 縣市"))
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 天氣 縣市"))
         else:
             res = get(city)
-            line_bot_api.reply_message(reply_token, TemplateSendMessage(
+            line_bot_api.reply_message(event.reply_token, TemplateSendMessage(
                 alt_text = city + '未來 36 小時天氣預測',
                 template = CarouselTemplate(
                     columns = [
