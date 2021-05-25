@@ -1,25 +1,2 @@
-<< Git & Heroku >>
-git clone https://github.com/Sharonwg26/Python-Line_Bot.git
-cd Python-Line_Bot
-git init
-
-git checkout -b dev
-
-git commit -a -m “app”
-git push origin dev
-
-git pull origin dev
-
-git checkout main
-
-git merge dev
-
-git branch -d dev
-
-git push origin main
-
-heroku login
-heroku git:remote -a python-letter-app
-git add .
-git commit -m "Add code"
-git push -f heroku main
+line-bot-sdk
+flask
