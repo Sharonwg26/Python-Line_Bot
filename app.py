@@ -327,7 +327,7 @@ def handle_message(event):
     
     elif cmd[0] == "篩檢站":
         city = cmd[1]
-        city = city.replace('台','臺')
+        city = city.replace('臺','台')
         if(not (city in cities)):
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 篩檢站 縣市"))
         else:
