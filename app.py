@@ -132,11 +132,16 @@ def body_temperature(num):
 # 教學網站
 def MakeWeb():
     msg="* 以下是中央大學相關的教育網站唷~\n\
-    \r 1. ncueeclass: https://ncueeclass.ncu.edu.tw/ \n \
-    \r 2. portal: https://portal.ncu.edu.tw/ \n \
+    \r 🌟ncueeclass: \n\
+    \r   https://ncueeclass.ncu.edu.tw/ \n \
+    \r 🌟portal: \n\
+    \r   https://portal.ncu.edu.tw/ \n \
+    \r\n\
     * 以下是一些常用的遠距教學軟體哦： \n \
-    \r 1. Google meeting: https://meet.google.com/ \n \
-    \r 2. Zoom:  https://zoom.us/zh-tw/meetings.html  （雖然被Ban了，不過偶爾還是會使用到）    \n \
+    \r 🌟Google Meet: \n\
+    \r   https://meet.google.com/ \n \
+    \r 🌟Zoom:（雖然被Ban了，不過偶爾還是會使用到）\n\
+    \r   https://zoom.us/zh-tw/meetings.html\n \
     小幫手有幫到你嘛,嘻嘻ヾ(✿ﾟ▽ﾟ)ノ"
     return msg
 
