@@ -93,7 +93,6 @@ def GetCityPandemic(city):
 
 # 體溫
 def body_temperature(num):
-    # 石頭：0, 布：1, 剪刀：2
     if num>37.5:
         msg='發燒了，如有接觸史，快點去醫院喔!!!'
     else:
@@ -151,9 +150,7 @@ def Insurance():
         if detail == None:
             continue
         detail = card.select_one("span", {'style':"font-size:20px;"}).getText()
-                
-        content += f"{title} \n{detail}\n\n"
-           
+        content += f"{title} \n{detail}\n\n"          
     return content
 
 #篩檢站
@@ -274,9 +271,9 @@ def handle_message(event):
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 天氣 縣市"))
         else:
             res = get(city)
-            line_bot_api.reply_message(event.reply_token,, FlexSendMessage(city + '未來 36 小時天氣預測',res))
+            line_bot_api.reply_message(event.reply_token, FlexSendMessage(city + '未來 36 小時天氣預測',res))
                 
-    elif cmd[0] == "保險資訊":
+    elif cmd[0] == "保險":
         InsuranceInformation = Insurance()
         line_bot_api.reply_message(
             event.reply_token,
