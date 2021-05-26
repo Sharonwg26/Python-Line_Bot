@@ -76,18 +76,46 @@ def GetTodayPandemic():
     todaypandemic = "今日新增："+reqsjson[13]["gs$cell"]["inputValue"]+"\n本土案例："+reqsjson[15]["gs$cell"]["inputValue"]+"\n境外移入："+reqsjson[17]["gs$cell"]["inputValue"]
     return todaypandemic
 
-# 台灣縣市累計確診
 def GetCityPandemic(city):
-    url ='https://spreadsheets.google.com/feeds/cells/1UVnq9a1zVIfygplsbOjOtMX2Bu6aUfet1PwN3MOM7bk/1/public/full?alt=json'
+    # 累計確診
+    url = 'https://spreadsheets.google.com/feeds/cells/1UVnq9a1zVIfygplsbOjOtMX2Bu6aUfet1PwN3MOM7bk/1/public/full?alt=json'
     reqsjson = requests.get(url).json()
     reqsjson = reqsjson["feed"]["entry"]
     target_city = "輸入錯誤，請重新輸入。\n（縣市名後請務必加上「縣/市」）"
     index = 0
-    
+
     for item in reqsjson:
-            if item["gs$cell"]["inputValue"] == city:
-                return reqsjson[index+1]["gs$cell"]["inputValue"]
-            index += 1
+        if item["gs$cell"]["inputValue"] == city:
+             cityPandemic = reqsjson[index + 1]["gs$cell"]["inputValue"]
+
+             #---------------丁-县市新增------------------#
+             url1 = 'https://covid-19.nchc.org.tw'
+             html = requests.get(url1, verify=False)
+             html.encoding = 'UTF-8'
+             sp = BeautifulSoup(html.text, 'html5lib')
+
+             citys = sp.find_all('button', class_='btn btn-success btn-lg')#城市名
+             new_confirm = sp.find_all('span', style='font-size: 0.8em;')#城市新增
+             Citys = []
+             New_confirm = []
+
+             for i in range(0, len(citys)):
+                 Citys.append(citys[i].get_text())
+
+             for i in range(4, len(citys) + 4):
+                 New_confirm.append(new_confirm[i].get_text())
+
+             for i in range(0, len(Citys)):
+                 Citys[i] = Citys[i].split()
+                 New_confirm[i] = New_confirm[i].split()
+
+             for i in range(0, len(Citys)):
+                 if city == Citys[i][0]:
+                     cityPandemic += "\n" + city + '今日新增：' + "".join(New_confirm[i]) + " 例(*為矯正回歸數)"
+             #---------------丁-县市新增------------------#
+             return cityPandemic
+        
+        index += 1
 
     return target_city
 
