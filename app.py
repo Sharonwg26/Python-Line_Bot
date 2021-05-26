@@ -207,6 +207,7 @@ def Screeningstation(city):
         
     return content
 
+#疫情專線
 def MakePhonecall():
     msg="* 以下是全國的防疫專線唷~\n\
     \r 🌟安心專線：1925 \n \
@@ -355,8 +356,7 @@ def handle_message(event):
     
     elif cmd[0] == "防疫專線":
         PhoneMsg = MakePhonecall()
-        SendMsg = [TextSendMessage(text=WebMsg),
-                   StickerSendMessage(package_id=1, sticker_id=4)]
+        SendMsg = TextSendMessage(text=PhoneMsg)
         line_bot_api.reply_message(event.reply_token, SendMsg)
     
     elif cmd[0] == "篩檢站":
