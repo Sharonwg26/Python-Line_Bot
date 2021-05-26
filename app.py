@@ -73,6 +73,7 @@ def GetTodayPandemic():
     return todaypandemic
 
 
+# 台灣縣市確診
 def GetCityPandemic(city):
     # 累計確診
     url = 'https://spreadsheets.google.com/feeds/cells/1UVnq9a1zVIfygplsbOjOtMX2Bu6aUfet1PwN3MOM7bk/1/public/full?alt=json'
