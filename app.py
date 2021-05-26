@@ -90,7 +90,7 @@ def GetCityPandemic(city):
              url1 = 'https://covid-19.nchc.org.tw'
              html = requests.get(url1, verify=False)
              html.encoding = 'UTF-8'
-             sp = soup = BeautifulSoup(html.text, "html.parser")
+             sp = BeautifulSoup(html.text, "html.parser")
 
              citys = sp.find_all('button', class_='btn btn-success btn-lg')#城市名
              new_confirm = sp.find_all('span', style='font-size: 0.8em;')#城市新增
