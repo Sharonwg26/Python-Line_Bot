@@ -73,15 +73,6 @@ def GetTodayPandemic():
     return todaypandemic
 
 
-# 縣市新增
-def newcome(name):
-    for i in range(0,len(Citys)):
-        if name == Citys[i][0]:
-            res='*'+ name + '今日新增：' +''.join(New_confirm[i])+'\n(*為矯正回歸數)'
-    return res
-
-          
-# 台灣縣市累計確診
 def GetCityPandemic(city):
     # 累計確診
     url = 'https://spreadsheets.google.com/feeds/cells/1UVnq9a1zVIfygplsbOjOtMX2Bu6aUfet1PwN3MOM7bk/1/public/full?alt=json'
@@ -93,16 +84,16 @@ def GetCityPandemic(city):
     for item in reqsjson:
         if item["gs$cell"]["inputValue"] == city:
              cityPandemic = reqsjson[index + 1]["gs$cell"]["inputValue"]
-             cityPandemic = '*'+city+"累計確診："+cityPandemic+"\n"
+             cityPandemic = city+"\n累計確診："+cityPandemic
              
              #---------------丁-县市新增------------------#
              url1 = 'https://covid-19.nchc.org.tw'
              html = requests.get(url1, verify=False)
              html.encoding = 'UTF-8'
-             soup = BeautifulSoup(html.text, "html.parser")
+             sp = soup = BeautifulSoup(html.text, "html.parser")
 
-             citys = soup.find_all('button', class_='btn btn-success btn-lg')#城市名
-             new_confirm = soup.find_all('span', style='font-size: 0.8em;')#城市新增
+             citys = sp.find_all('button', class_='btn btn-success btn-lg')#城市名
+             new_confirm = sp.find_all('span', style='font-size: 0.8em;')#城市新增
              Citys = []
              New_confirm = []
 
@@ -115,8 +106,11 @@ def GetCityPandemic(city):
              for i in range(0, len(Citys)):
                  Citys[i] = Citys[i].split()
                  New_confirm[i] = New_confirm[i].split()
+
+             for i in range(0, len(Citys)):
+                 if city == Citys[i][0]:
+                     cityPandemic += "\n今日新增：" + "".join(New_confirm[i]) + "\n(*為矯正回歸確診數)"
              #---------------丁-县市新增------------------#
-             cityPandemic=cityPandemic+ newcome(city)
              return cityPandemic
         
         index += 1
@@ -124,7 +118,6 @@ def GetCityPandemic(city):
     return target_city
 
                   
-
 # 體溫
 def body_temperature(num):
     if num>37.5:
