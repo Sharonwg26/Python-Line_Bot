@@ -200,8 +200,7 @@ def Screeningstation(city):
     city = '\n' + city
     soup = BeautifulSoup(response.text, "html.parser")
     datas = soup.find_all("p")
-    content=""
-    content += city1 + "👻\n"
+    content += city+ "👻\n"
     start = 0
     for data in datas:
         detail = data.getText()
