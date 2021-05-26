@@ -81,7 +81,7 @@ def GetTodayPandemic():
 def newcome(name):
     for i in range(0,len(Citys)):
         if name == Citys[i][0]:
-            res='*'+ name + '今日新增：' +''.join(New_confirm[i])+' 例(*為矯正回歸數)'
+            res='*'+ name + '今日新增：' +''.join(New_confirm[i])+'\n(*為矯正回歸數)'
     return res
 
           
@@ -103,7 +103,7 @@ def GetCityPandemic(city):
              url1 = 'https://covid-19.nchc.org.tw'
              html = requests.get(url1, verify=False)
              html.encoding = 'UTF-8'
-             sp = BeautifulSoup(html.text, 'html5lib')
+             sp = BeautifulSoup(response.text, "html.parser")
 
              citys = sp.find_all('button', class_='btn btn-success btn-lg')#城市名
              new_confirm = sp.find_all('span', style='font-size: 0.8em;')#城市新增
