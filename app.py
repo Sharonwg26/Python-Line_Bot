@@ -39,6 +39,7 @@ def MakeIntroduction():
     msg += "✨篩檢站：\n查看全台灣的篩檢站和醫院\n\n"
     msg += "✨疫苗：\n查看全台灣可施打疫苗的醫院\n\n"
     msg += "✨保險：\n查看各公司防疫保單的相關訊息\n\n"
+    msg += "✨防疫專線：\n查看防疫專線和各縣市服務專線\n\n"
     msg += "✨教學網站：\n觀看教育網站以及線上教學\n\n"
     msg += "✨猜拳：\n來和小幫手玩猜拳吧💕"
     return msg
@@ -206,6 +207,24 @@ def Screeningstation(city):
         
     return content
 
+def MakePhonecall():
+    msg="* 以下是全國的防疫專線唷~\n\
+    \r 🌟安心專線：1925 \n \
+    \r  服務時間：週一至週日，24小時服務專線 \n \
+    \r 🌟疾病管制署防疫專線：1922 \n \
+    \r  服務時間：週一至週日，24小時服務專線 \n \
+    \r 🌟全國疫情免付費通報專線：0800-024-582 \n \
+    \r  服務時間：週一至週日，24小時服務專線 \n \
+    \r 🌟安心專線：1925 \n \
+    \r  服務時間：週一至週日，24小時服務專線 \n \
+    \r 🌟防疫补偿金：1957 \n \
+    \r  服務時間：週一至週日，24小時服務專線 \n \
+    \r\n \
+    \r  各縣市服務專線請您參考以下網址：\n \
+    \r  https://www.cdc.gov.tw/Category/Page/XRPe-3X_vQ0BmYLrvwruSw\n \
+    小幫手有幫到你嘛～嘻嘻💗"
+    return msg
+
 # 猜拳
 def MakePaperScissorsStone(text):
     # 石頭：0, 布：1, 剪刀：2
@@ -321,16 +340,24 @@ def handle_message(event):
             res = get(city)
             print(res)
             line_bot_api.reply_message(event.reply_token, FlexSendMessage(city + '未來 36 小時天氣預測',res))
+    
     elif(cmd == 'location'):
         message=event.message.text
         city = event.message.address[5:8].replace('台','臺')
         res = get(city)
         line_bot_api.reply_message(event.reply_token, FlexSendMessage(city + '未來 36 小時天氣預測',res))         
+    
     elif cmd[0] == "保險":
         InsuranceInformation = Insurance()
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=InsuranceInformation))
+    
+    elif cmd[0] == "防疫專線":
+        PhoneMsg = MakePhonecall()
+        SendMsg = [TextSendMessage(text=WebMsg),
+                   StickerSendMessage(package_id=1, sticker_id=4)]
+        line_bot_api.reply_message(event.reply_token, SendMsg)
     
     elif cmd[0] == "篩檢站":
         city = cmd[1]
