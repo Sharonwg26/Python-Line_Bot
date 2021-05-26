@@ -1,9 +1,8 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, render_template, Response
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
 from bs4 import BeautifulSoup
-
 import random
 import requests
 import json
@@ -100,10 +99,10 @@ def GetCityPandemic(city):
              url1 = 'https://covid-19.nchc.org.tw'
              html = requests.get(url1, verify=False)
              html.encoding = 'UTF-8'
-             sp = BeautifulSoup(response.text, "html.parser")
+             soup = BeautifulSoup(response.text, "html.parser")
 
-             citys = sp.find_all('button', class_='btn btn-success btn-lg')#城市名
-             new_confirm = sp.find_all('span', style='font-size: 0.8em;')#城市新增
+             citys = soup.find_all('button', class_='btn btn-success btn-lg')#城市名
+             new_confirm = soup.find_all('span', style='font-size: 0.8em;')#城市新增
              Citys = []
              New_confirm = []
 
