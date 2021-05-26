@@ -181,7 +181,7 @@ def Insurance():
         if detail == None:
             continue
         detail = card.select_one("span", {'style':"font-size:20px;"}).getText()
-        content += f"{title} \n{detail}\n\n"          
+        content += f"✨{title} ✨\n{detail}\n\n"          
     return content
 
 #篩檢站
@@ -191,6 +191,7 @@ def Screeningstation(city):
     soup = BeautifulSoup(response.text, "html.parser")
     datas = soup.find_all("p")
     content = ""
+    content += city1 + "👻\n"
     start = 0
     for data in datas:
         detail = data.getText()
@@ -198,6 +199,8 @@ def Screeningstation(city):
             continue
         if detail == city:
             start = start + 1
+            continue
+            
         if start == 0:
             continue
         
@@ -314,12 +317,13 @@ def handle_message(event):
             TextSendMessage(text=InsuranceInformation))
     
     elif cmd[0] == "篩檢站":
-        city = cmd[1]
+        city1 = cmd[1]
+        city = city.replace('台','臺')
         if(not (city in cities)):
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 篩檢站 縣市"))
         else:
-            station = Screeningstation(city)
-            line_bot_api.reply_message(event.reply_token,text=station)
+            station = Screeningstation(city1)
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text=station))
         
     elif cmd[0] == "猜拳":
         line_bot_api.reply_message(
