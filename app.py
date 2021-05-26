@@ -326,7 +326,7 @@ def handle_message(event):
                    StickerSendMessage(package_id=1, sticker_id=4)]
         line_bot_api.reply_message(event.reply_token, SendMsg)
     
-     elif cmd[0] == "天氣":
+    elif cmd[0] == "天氣":
         city = cmd[1]
         city = city.replace('台','臺')
         if(not (city in cities)):
