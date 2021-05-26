@@ -76,7 +76,7 @@ def GetTodayPandemic():
     todaypandemic = "今日新增："+reqsjson[13]["gs$cell"]["inputValue"]+"\n本土案例："+reqsjson[15]["gs$cell"]["inputValue"]+"\n境外移入："+reqsjson[17]["gs$cell"]["inputValue"]
     return todaypandemic
 
-# 台灣縣市確診
+# 台灣縣市累計確診
 def GetCityPandemic(city):
     # 累計確診
     url = 'https://spreadsheets.google.com/feeds/cells/1UVnq9a1zVIfygplsbOjOtMX2Bu6aUfet1PwN3MOM7bk/1/public/full?alt=json'
@@ -121,6 +121,7 @@ def GetCityPandemic(city):
 
     return target_city
 
+
 # 體溫
 def body_temperature(num):
     if num>37.5:
@@ -146,8 +147,8 @@ def get(city):
     token = 'CWB-E5F5EFC0-30D2-43E6-B9C5-DDC64B24FA74'
     url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=' + token + '&format=JSON&locationName=' + str(city)
     Data = requests.get(url)
-    Data = (json.loads(Data.text))['records']['location'][0]['weatherElement']
-    res = json.load(open('card.json','r'))
+    Data = (json.loads(Data.text,encoding='utf-8'))['records']['location'][0]['weatherElement']
+    res = json.load(open('card.json','r',encoding='utf-8'))
     for j in range(3):
         bubble = json.load(open('bubble.json','r'))
         # title
@@ -165,7 +166,7 @@ def get(city):
         res['contents'].append(bubble)
     return res
 
-# 保險
+#保險
 def Insurance():
     response = requests.get( "https://www.phew.tw/article/cont/phewpoint/current/news/11217/2021051211217")
     soup = BeautifulSoup(response.text, "html.parser")
@@ -183,7 +184,7 @@ def Insurance():
         content += f"{title} \n{detail}\n\n"          
     return content
 
-# 篩檢站
+#篩檢站
 def Screeningstation(city):
     response = requests.get("https://udn.com/news/story/122173/5472099")
     city = '\n' + city
@@ -299,8 +300,13 @@ def handle_message(event):
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 天氣 縣市"))
         else:
             res = get(city)
+            print(res)
             line_bot_api.reply_message(event.reply_token, FlexSendMessage(city + '未來 36 小時天氣預測',res))
-                
+    elif(cmd == 'location'):
+        message=event.message.text
+        city = event.message.address[5:8].replace('台','臺')
+        res = get(city)
+        line_bot_api.reply_message(event.reply_token, FlexSendMessage(city + '未來 36 小時天氣預測',res))         
     elif cmd[0] == "保險":
         InsuranceInformation = Insurance()
         line_bot_api.reply_message(
