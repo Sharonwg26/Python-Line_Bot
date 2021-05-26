@@ -1,4 +1,4 @@
-from flask import Flask, request, abort, render_template, Response
+from flask import Flask, request, abort, render_template
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
@@ -85,7 +85,7 @@ def GetCityPandemic(city):
     for item in reqsjson:
         if item["gs$cell"]["inputValue"] == city:
              cityPandemic = reqsjson[index + 1]["gs$cell"]["inputValue"]
-             cityPandemic = city+"\n累計確診："+cityPandemic
+             cityPandemic = city+"累計確診："+cityPandemic
              
              #---------------丁-县市新增------------------#
              url1 = 'https://covid-19.nchc.org.tw'
