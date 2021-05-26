@@ -115,9 +115,6 @@ def GetCityPandemic(city):
              for i in range(0, len(Citys)):
                  Citys[i] = Citys[i].split()
                  New_confirm[i] = New_confirm[i].split()
-
-
-            
              #---------------丁-县市新增------------------#
              cityPandemic=cityPandemic+ newcome(city)
              return cityPandemic
