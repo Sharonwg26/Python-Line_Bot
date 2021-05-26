@@ -80,7 +80,7 @@ def GetCityPandemic(city):
     url = 'https://spreadsheets.google.com/feeds/cells/1UVnq9a1zVIfygplsbOjOtMX2Bu6aUfet1PwN3MOM7bk/1/public/full?alt=json'
     reqsjson = requests.get(url).json()
     reqsjson = reqsjson["feed"]["entry"]
-    target_city = "輸入錯誤，請重新輸入。\n（縣市名後請務必加上「縣/市」）"
+    target_city = "查詢格式為: 縣市疫情 縣市。\n（縣市名後請務必加上「縣/市」）"
     index = 0
 
     for item in reqsjson:
