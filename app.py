@@ -75,6 +75,7 @@ def GetTodayPandemic():
     reqsjson = reqsjson["feed"]["entry"]
     todaypandemic = "今日新增："+reqsjson[13]["gs$cell"]["inputValue"]+"\n本土案例："+reqsjson[15]["gs$cell"]["inputValue"]+"\n境外移入："+reqsjson[17]["gs$cell"]["inputValue"]
     return todaypandemic
+
 # 台灣縣市累計確診
 def GetCityPandemic(city):
     url ='https://spreadsheets.google.com/feeds/cells/1UVnq9a1zVIfygplsbOjOtMX2Bu6aUfet1PwN3MOM7bk/1/public/full?alt=json'
@@ -92,53 +93,13 @@ def GetCityPandemic(city):
 
 # 體溫
 def body_temperature(num):
+    # 石頭：0, 布：1, 剪刀：2
     if num>37.5:
         msg='發燒了，如有接觸史，快點去醫院喔!!!'
     else:
         msg='一切正常 👍👍👍'
     return msg
-#篩檢站
-def Screeningstation(city):
-    response = requests.get("https://udn.com/news/story/122173/5472099")
-    city = '\n' + city
-    soup = BeautifulSoup(response.text, "html.parser")
-    datas = soup.find_all("p")
-    content = ""
-    start = 0
-    for data in datas:
-        detail = data.getText()
-        if len(detail) >= 50 or len(detail) < 2:
-            continue
-        if detail == city:
-            start = start + 1
-        if start == 0:
-            continue
-        
-        if len(detail) == 4 and detail != city:
-            break
-        content += f"{detail}"
-        
-    return content
 
-#保險
-def Insurance():
-    response = requests.get( "https://www.phew.tw/article/cont/phewpoint/current/news/11217/2021051211217")
-    soup = BeautifulSoup(response.text, "html.parser")
-    cards = soup.find_all("p", limit=20)
-    content = ""
-    for card in cards:
-        title = card.find("span",{'style':"color:#0000CD;"})
-        if title == None:
-           continue 
-        title = card.find("span",{'style':"color:#0000CD;"}).getText()
-        detail = card.select_one("span", {'style':"font-size:20px;"})
-        if detail == None:
-            continue
-        detail = card.select_one("span", {'style':"font-size:20px;"}).getText()
-                
-        content += f"{title} \n{detail}\n\n"
-           
-    return content
 
 # 教學網站
 def MakeWeb():
@@ -175,6 +136,48 @@ def get(city):
         res['contents'].append(bubble)
     return res
 
+#保險
+def Insurance():
+    response = requests.get( "https://www.phew.tw/article/cont/phewpoint/current/news/11217/2021051211217")
+    soup = BeautifulSoup(response.text, "html.parser")
+    cards = soup.find_all("p", limit=20)
+    content = ""
+    for card in cards:
+        title = card.find("span",{'style':"color:#0000CD;"})
+        if title == None:
+           continue 
+        title = card.find("span",{'style':"color:#0000CD;"}).getText()
+        detail = card.select_one("span", {'style':"font-size:20px;"})
+        if detail == None:
+            continue
+        detail = card.select_one("span", {'style':"font-size:20px;"}).getText()
+                
+        content += f"{title} \n{detail}\n\n"
+           
+    return content
+
+#篩檢站
+def Screeningstation(city):
+    response = requests.get("https://udn.com/news/story/122173/5472099")
+    city = '\n' + city
+    soup = BeautifulSoup(response.text, "html.parser")
+    datas = soup.find_all("p")
+    content = ""
+    start = 0
+    for data in datas:
+        detail = data.getText()
+        if len(detail) >= 50 or len(detail) < 2:
+            continue
+        if detail == city:
+            start = start + 1
+        if start == 0:
+            continue
+        
+        if len(detail) == 4 and detail != city:
+            break
+        content += f"{detail}"
+        
+    return content
 
 # 猜拳
 def MakePaperScissorsStone(text):
@@ -257,21 +260,7 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=temperature))
-    
-    elif cmd[0] == "保險":
-        InsuranceInformation = Insurance()
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=InsuranceInformation))
-    
-    elif cmd[0] == "篩檢站":
-        city = cmd[1]
-        if(not (city in cities)):
-            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 篩檢站 縣市"))
-        else:
-            station = Screeningstation(city)
-            line_bot_api.reply_message(event.reply_token,text=station)
-    
+        
     elif cmd[0] == "教學網站":
         WebMsg = MakeWeb()
         SendMsg = [TextSendMessage(text=WebMsg),
@@ -284,11 +273,23 @@ def handle_message(event):
         if(not (city in cities)):
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 天氣 縣市"))
         else:
-                res = get(city)
-                print(res)
-                line_bot_api.reply_message(reply_token, FlexSendMessage(city + '未來 36 小時天氣預測',res))
+            res = get(city)
+            line_bot_api.reply_message(reply_token, FlexSendMessage(city + '未來 36 小時天氣預測',res))
                 
+    elif cmd[0] == "保險資訊":
+        InsuranceInformation = Insurance()
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=InsuranceInformation))
     
+    elif cmd[0] == "篩檢站":
+        city = cmd[1]
+        if(not (city in cities)):
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 篩檢站 縣市"))
+        else:
+            station = Screeningstation(city)
+            line_bot_api.reply_message(event.reply_token,text=station)
+        
     elif cmd[0] == "猜拳":
         line_bot_api.reply_message(
             event.reply_token,
