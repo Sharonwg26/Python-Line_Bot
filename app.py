@@ -76,6 +76,15 @@ def GetTodayPandemic():
     todaypandemic = "今日新增："+reqsjson[13]["gs$cell"]["inputValue"]+"\n本土案例："+reqsjson[15]["gs$cell"]["inputValue"]+"\n境外移入："+reqsjson[17]["gs$cell"]["inputValue"]
     return todaypandemic
 
+
+# 縣市新增
+def newcome(name):
+    for i in range(0,len(Citys)):
+        if name == Citys[i][0]:
+            res='*'+ name + '今日新增：' +''.join(New_confirm[i])+' 例(*為矯正回歸數)'
+    return res
+
+          
 # 台灣縣市累計確診
 def GetCityPandemic(city):
     # 累計確診
@@ -88,7 +97,7 @@ def GetCityPandemic(city):
     for item in reqsjson:
         if item["gs$cell"]["inputValue"] == city:
              cityPandemic = reqsjson[index + 1]["gs$cell"]["inputValue"]
-             cityPandemic = city+"累計確診："+cityPandemic
+             cityPandemic = '*'+city+"累計確診："+cityPandemic+"\n"
              
              #---------------丁-县市新增------------------#
              url1 = 'https://covid-19.nchc.org.tw'
@@ -111,16 +120,17 @@ def GetCityPandemic(city):
                  Citys[i] = Citys[i].split()
                  New_confirm[i] = New_confirm[i].split()
 
-             for i in range(0, len(Citys)):
-                 if city == Citys[i][0]:
-                     cityPandemic += "\n今日新增：" + "".join(New_confirm[i]) + "\n(*為矯正回歸確診數)"
+
+            
              #---------------丁-县市新增------------------#
+             cityPandemic=cityPandemic+ newcome(city)
              return cityPandemic
         
         index += 1
 
     return target_city
 
+                  
 
 # 體溫
 def body_temperature(num):
@@ -181,7 +191,7 @@ def Insurance():
         if detail == None:
             continue
         detail = card.select_one("span", {'style':"font-size:20px;"}).getText()
-        content += f"✨{title} ✨\n{detail}\n\n"          
+        content += f"✨{title} ✨\n{detail}\n\n"
     return content
 
 #篩檢站
@@ -190,7 +200,7 @@ def Screeningstation(city):
     city = '\n' + city
     soup = BeautifulSoup(response.text, "html.parser")
     datas = soup.find_all("p")
-    content = ""
+    content=""
     content += city1 + "👻\n"
     start = 0
     for data in datas:
@@ -200,7 +210,6 @@ def Screeningstation(city):
         if detail == city:
             start = start + 1
             continue
-            
         if start == 0:
             continue
         
@@ -317,12 +326,12 @@ def handle_message(event):
             TextSendMessage(text=InsuranceInformation))
     
     elif cmd[0] == "篩檢站":
-        city1 = cmd[1]
+        city = cmd[1]
         city = city.replace('台','臺')
         if(not (city in cities)):
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 篩檢站 縣市"))
         else:
-            station = Screeningstation(city1)
+            station = Screeningstation(city)
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text=station))
         
     elif cmd[0] == "猜拳":
