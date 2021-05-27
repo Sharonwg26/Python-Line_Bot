@@ -286,7 +286,7 @@ def handle_message(event):
                             action=MessageAction(label="今日疫情😷", text="今日疫情")
                         ),
                         QuickReplyButton(
-                            action=MessageAction(label="縣市疫情😷", text="縣市疫情")
+                            action=MessageAction(label="縣市疫情😷", text="縣市疫情 (縣市)")
                         )
                     ])))
         
@@ -309,7 +309,9 @@ def handle_message(event):
             TextSendMessage(text=TodayPandemicMsg))
         
     elif cmd[0]== "縣市疫情":
-        CityPandemicMsg = GetCityPandemic(cmd[1])
+        city = cmd[1]
+        city = city.replace('臺','台')
+        CityPandemicMsg = GetCityPandemic(city)
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=CityPandemicMsg))
