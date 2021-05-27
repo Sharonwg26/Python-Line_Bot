@@ -310,7 +310,7 @@ def handle_message(event):
         
     elif cmd[0]== "縣市疫情":
         city = cmd[1]
-        city = city.replace('臺','台')
+        city = city.replace('台','臺')
         CityPandemicMsg = GetCityPandemic(city)
         line_bot_api.reply_message(
             event.reply_token,
