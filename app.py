@@ -173,6 +173,8 @@ def Insurance():
         if detail == None:
             continue
         detail = card.select_one("span", {'style':"font-size:20px;"}).getText()
+        if detail[len(detail)-2] == '售' and detail[len(detail)-3] == '停':
+            continue
         content += f"✨{title} ✨\n{detail}\n\n"
     return content
 
