@@ -326,54 +326,49 @@ def handle_message(event):
         
     elif cmd[0] == "教學網站":
         Carousel_template = TemplateSendMessage(
-        alt_text='Carousel template',
-        template=CarouselTemplate(
-        columns=[
-            CarouselColumn(
-                thumbnail_image_url='https://www.ncu.edu.tw/assets/thumbs/pic/df1dfaf0f9e30b8cc39505e1a5a63254.png',
-                title='🌟 NCU portal 🌟',
-                actions=[
-                    URITemplateAction(
-                        label='https://portal.ncu.edu.tw/',
-                        uri='https://portal.ncu.edu.tw/'
-                    )
-                ]
-            ),
-            CarouselColumn(
-                thumbnail_image_url='https://www.google.com/url?sa=i&url=https%3A%2F%2Fncueeclass.ncu.edu.tw%2Fcourse%2F5139&psig=AOvVaw0dfl7GXvLSVUyHG5XJlzIC&ust=1622295317848000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCIiG6qa_7PACFQAAAAAdAAAAABAD',
-                title='🌟 ncueeclass 🌟',
-                actions=[
-                    URITemplateAction(
-                        label='https://ncueeclass.ncu.edu.tw/',
-                        uri='https://ncueeclass.ncu.edu.tw/'
-                    )
-                ]
-            ),
-            CarouselColumn(
-                thumbnail_image_url='https://www.google.com/url?sa=i&url=https%3A%2F%2Ftw.news.yahoo.com%2F%25E5%25A6%2582%25E4%25BD%2595%25E4%25BB%25A5google%25E6%2597%25A5%25E6%259B%2586%25E9%2596%258B%25E5%2595%259Fgoogle-meet%25E8%25A6%2596%25E8%25A8%258A%25E6%259C%2583%25E8%25AD%25B0-133250711.html&psig=AOvVaw1PK-DKPV5Mu3kmBY758KeA&ust=1622295565077000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCJCGyInA7PACFQAAAAAdAAAAABAD',
-                title='🌟 Google Meet 🌟',
-                actions=[
-                    URITemplateAction(
-                        label='https://meet.google.com/',
-                        uri='https://meet.google.com/'
-                    )
-                ]
-            ),
-            CarouselColumn(
-                thumbnail_image_url='https://www.google.com/url?sa=i&url=https%3A%2F%2Fmashdigi.com%2Fzoom-updated-for-zoom-bombing%2F&psig=AOvVaw0F3B34WXcnhmD5-p1PraSP&ust=1622295743950000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCKDDnN_A7PACFQAAAAAdAAAAABAD',
-                title='🌟 Zoom 🌟',
-                text='雖然被Ban了，不過偶爾還是會使用到呢 🦔',
-                actions=[
-                    URITemplateAction(
-                        label='https://zoom.us/zh-tw/meetings.html',
-                        uri='https://zoom.us/zh-tw/meetings.html'
+            alt_text='Carousel template',
+            template=CarouselTemplate(
+                columns=[
+                    CarouselColumn(
+                        thumbnail_image_url='https://www.ncu.edu.tw/assets/thumbs/pic/df1dfaf0f9e30b8cc39505e1a5a63254.png',
+                        title='NCU portal',
+                        actions=[
+                            URITemplateAction(
+                                label='https://portal.ncu.edu.tw/',
+                                uri='https://portal.ncu.edu.tw/'
+                            )   
+                        ]
+                    ),
+                    CarouselColumn(
+                        thumbnail_image_url='https://www.google.com/url?sa=i&url=https%3A%2F%2Fncueeclass.ncu.edu.tw%2Fcourse%2F5139&psig=AOvVaw0dfl7GXvLSVUyHG5XJlzIC&ust=1622295317848000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCIiG6qa_7PACFQAAAAAdAAAAABAD',
+                        title='ncueeclass',
+                        actions=URITemplateAction(
+                            label='https://ncueeclass.ncu.edu.tw/',
+                            uri='https://ncueeclass.ncu.edu.tw/'
+                        )
+                    ),
+                    CarouselColumn(
+                        thumbnail_image_url='https://www.google.com/url?sa=i&url=https%3A%2F%2Ftw.news.yahoo.com%2F%25E5%25A6%2582%25E4%25BD%2595%25E4%25BB%25A5google%25E6%2597%25A5%25E6%259B%2586%25E9%2596%258B%25E5%2595%259Fgoogle-meet%25E8%25A6%2596%25E8%25A8%258A%25E6%259C%2583%25E8%25AD%25B0-133250711.html&psig=AOvVaw1PK-DKPV5Mu3kmBY758KeA&ust=1622295565077000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCJCGyInA7PACFQAAAAAdAAAAABAD',
+                        title='Google Meet',
+                        actions=URITemplateAction(
+                                label='https://meet.google.com/',
+                                uri='https://meet.google.com/'
+                        )
+                    ),
+                    CarouselColumn(
+                        thumbnail_image_url='https://www.google.com/url?sa=i&url=https%3A%2F%2Fmashdigi.com%2Fzoom-updated-for-zoom-bombing%2F&psig=AOvVaw0F3B34WXcnhmD5-p1PraSP&ust=1622295743950000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCKDDnN_A7PACFQAAAAAdAAAAABAD',
+                        title='Zoom',
+                        text='雖然被Ban了，不過偶爾還是會使用到呢',
+                        actions=URITemplateAction(
+                                label='https://zoom.us/zh-tw/meetings.html',
+                                uri='https://zoom.us/zh-tw/meetings.html'
+                        )
                     )
                 ]
             )
-        ]
-    )
-    )
+        )
         line_bot_api.reply_message(event.reply_token,Carousel_template)
+        
         #WebMsg = MakeWeb()
         #SendMsg = [TextSendMessage(text=WebMsg),
                   # StickerSendMessage(package_id=1, sticker_id=4)]
