@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
 from flask import Flask, request, abort, render_template
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -151,11 +153,11 @@ def get(city):
     token = 'CWB-E5F5EFC0-30D2-43E6-B9C5-DDC64B24FA74'
     url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=' + token + '&format=JSON&locationName=' + str(city)
     Data = requests.get(url)
-    Data = (json.loads(Data.text))['records']['location'][0]['weatherElement']
-    res = json.load(open('card.json','r'))
+    Data = (json.loads(Data.text,encoding='utf-8'))['records']['location'][0]['weatherElement']
+    res = json.load(open('card.json','r',encoding='utf-8'))
     print(Data)
     for j in range(3):
-        bubble = json.load(open('bubble.json','r'))
+        bubble = json.load(open('bubble.json','r'),encoding='utf-8')
         # title
         bubble['body']['contents'][0]['text'] = city + '未來 36 小時天氣'
         # time
