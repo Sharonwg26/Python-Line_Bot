@@ -152,7 +152,7 @@ def MakeWeb():
 def MakeRailFall(station):
     result = requests.get(
         "https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0002-001?Authorization=CWB-E5F5EFC0-30D2-43E6-B9C5-DDC64B24FA74")
-    msg = "降雨報告 - " + station + "\n\n"
+    msg = "\n🌧 降雨報告 - " + station + "\n\n"
 
     if(result.status_code != 200):
         return "雨量資料讀取失敗"
@@ -191,9 +191,9 @@ def MakeWeather(station):
     if WeatherData == "not found":
         return False
     WeatherData = WeatherData["weatherElement"]
-    msg = "天氣報告 - " + station
-    msg += "\n\n氣溫 = " + WeatherData[3]["elementValue"] + "℃\n"
-    msg += "濕度 = " + \
+    msg = "⛅ 天氣報告 - " + station
+    msg += "\n\n🌡🌡🌡 氣溫 = " + WeatherData[3]["elementValue"] + "℃\n"
+    msg += "💧💧💧 濕度 = " + \
         str(float(WeatherData[4]["elementValue"]) * 100) + "% RH\n"
 
     msg += MakeRailFall(station)
@@ -462,12 +462,6 @@ def handle_message(event):
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 天氣 氣象站"))
         else:
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text=WeatherMsg))
-    elif(cmd == 'location'):
-        message=event.message.text
-        city = event.message.address[5:8].replace('台','臺')
-        res = get(city)
-        line_bot_api.reply_message(event.reply_token, FlexSendMessage(city + '未來 36 小時天氣預測',res))         
-    
     elif cmd[0] == "保險":
         InsuranceInformation = Insurance()
         line_bot_api.reply_message(
