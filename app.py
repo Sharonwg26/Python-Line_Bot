@@ -155,7 +155,7 @@ def get(city):
     res = json.load(open('card.json','r'))
     print(Data)
     for j in range(3):
-        bubble = json.load(open('bubble.json','r',encoding='utf-8'))
+        bubble = json.load(open('bubble.json','r'))
         # title
         bubble['body']['contents'][0]['text'] = city + '未來 36 小時天氣'
         # time
