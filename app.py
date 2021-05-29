@@ -149,6 +149,51 @@ def MakeWeb():
 
 
 # 天氣
+def MakeAQI(station):
+    end_point = "http://opendata.epa.gov.tw/webapi/api/rest/datastore/355000000I-000259?filters=SiteName eq '" + \
+        station + "'&sort=SiteName&offset=0&limit=1000"
+
+    data = requests.get(end_point)
+    AQImsg = ""
+
+    if data.status_code == 500:
+        return "無 AQI 資料"
+    else:
+        AQIdata = data.json()["result"]["records"][0]
+        AQImsg += "AQI = " + AQIdata["AQI"] + "\n"
+        AQImsg += "PM2.5 = " + AQIdata["PM2.5"] + " μg/m3\n"
+        AQImsg += "PM10 = " + AQIdata["PM10"] + " μg/m3\n"
+        AQImsg += "空品：" + AQIdata["Status"]
+        return AQImsg
+
+
+def GetWeather(station):
+    token = 'CWB-E5F5EFC0-30D2-43E6-B9C5-DDC64B24FA74'
+    end_point = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0001-001?Authorization=" + token
+
+    data = requests.get(end_point).json()
+    data = data["records"]["location"]
+
+    target_station = "not found"
+    for item in data:
+        if item["locationName"] == str(station):
+            target_station = item
+    return target_station
+
+
+def MakeWeather(station):
+    WeatherData = GetWeather(station)
+    if WeatherData == "not found":
+        return False
+    WeatherData = WeatherData["weatherElement"]
+    msg = "天氣報告 - " + station
+    msg += "\n\n氣溫 = " + WeatherData[3]["elementValue"] + "℃\n"
+    msg += "濕度 = " + \
+        str(float(WeatherData[4]["elementValue"]) * 100) + "% RH\n"
+
+    msg += MakeAQI(station)
+    return msg
+"""
 def get(city):
     token = 'CWB-E5F5EFC0-30D2-43E6-B9C5-DDC64B24FA74'
     url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=' + token + '&format=JSON&locationName=' + str(city)
@@ -171,7 +216,7 @@ def get(city):
         # comfort
         bubble['body']['contents'][3]['contents'][4]['contents'][1]['text'] = Data[3]['time'][j]['parameter']['parameterName']
         res['contents'].append(bubble)
-
+"""
 #保險
 def Insurance():
     response = requests.get( "https://www.phew.tw/article/cont/phewpoint/current/news/11217/2021051211217")
@@ -430,11 +475,11 @@ def handle_message(event):
     elif cmd[0] == "天氣":
         city = cmd[1]
         city = city.replace('台','臺')
-        if(not (city in cities)):
-            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 天氣 縣市"))
+        WeatherMsg = MakeWeather(city)
+        if not WeatherMsg:
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 天氣 氣象站"))
         else:
-            res = get(city)
-            line_bot_api.reply_message(event.reply_token, FlexSendMessage(city + '未來 36 小時天氣預測',res)) 
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text=WeatherMsg))
     elif(cmd == 'location'):
         message=event.message.text
         city = event.message.address[5:8].replace('台','臺')
