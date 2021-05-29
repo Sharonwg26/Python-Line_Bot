@@ -149,23 +149,28 @@ def MakeWeb():
 
 
 # 天氣
-def MakeAQI(station):
-    end_point = "http://opendata.epa.gov.tw/webapi/api/rest/datastore/355000000I-000259?filters=SiteName eq '" + \
-        station + "'&sort=SiteName&offset=0&limit=1000"
+def MakeRailFall(station):
+    result = requests.get(
+        "https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0002-001?Authorization=CWB-E5F5EFC0-30D2-43E6-B9C5-DDC64B24FA74")
+    msg = "降雨報告 - " + station + "\n\n"
 
-    data = requests.get(end_point)
-    AQImsg = ""
-
-    if data.status_code == 500:
-        return "無 AQI 資料"
+    if(result.status_code != 200):
+        return "雨量資料讀取失敗"
     else:
-        AQIdata = data.json()["result"]["records"][0]
-        AQImsg += "AQI = " + AQIdata["AQI"] + "\n"
-        AQImsg += "PM2.5 = " + AQIdata["PM2.5"] + " μg/m3\n"
-        AQImsg += "PM10 = " + AQIdata["PM10"] + " μg/m3\n"
-        AQImsg += "空品：" + AQIdata["Status"]
-        return AQImsg
-
+        railFallData = result.json()
+        for item in railFallData["records"]["location"]:
+            if station in item["locationName"]:
+                msg += "目前雨量：" + \
+                    item["weatherElement"][7]["elementValue"] + "mm\n"
+                if item["weatherElement"][3]["elementValue"] == "-998.00":
+                    msg += "三小時雨量：0.00mm\n"
+                else:
+                    msg += "三小時雨量：" + \
+                        item["weatherElement"][3]["elementValue"] + "mm\n"
+                msg += "日雨量：" + \
+                    item["weatherElement"][6]["elementValue"] + "mm\n"
+                return msg
+        return "沒有這個測站啦"
 
 def GetWeather(station):
     token = 'CWB-E5F5EFC0-30D2-43E6-B9C5-DDC64B24FA74'
@@ -191,32 +196,9 @@ def MakeWeather(station):
     msg += "濕度 = " + \
         str(float(WeatherData[4]["elementValue"]) * 100) + "% RH\n"
 
-    msg += MakeAQI(station)
+    msg += MakeRailFall(station)
     return msg
-"""
-def get(city):
-    token = 'CWB-E5F5EFC0-30D2-43E6-B9C5-DDC64B24FA74'
-    url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=' + token + '&format=JSON&locationName=' + str(city)
-    Data = requests.get(url).json()
-    Data = (json.dumps(Data.text,ensure_ascii=False))['records']['location'][0]['weatherElement']
-    res = json.load(open('card.json','r',encoding='utf-8'))
-    print(Data)
-    for j in range(3):
-        bubble = json.load(open('bubble.json','r'),encoding='utf-8')
-        # title
-        bubble['body']['contents'][0]['text'] = city + '未來 36 小時天氣'
-        # time
-        bubble['body']['contents'][1]['contents'][0]['text'] = '{} ~ {}'.format(Data[0]['time'][j]['startTime'][5:-3],Data[0]['time'][j]['endTime'][5:-3])
-        # weather
-        bubble['body']['contents'][3]['contents'][1]['contents'][1]['text'] = Data[0]['time'][j]['parameter']['parameterName']
-        # temp
-        bubble['body']['contents'][3]['contents'][2]['contents'][1]['text'] = '{}°C ~ {}°C'.format(Data[2]['time'][j]['parameter']['parameterName'],Data[4]['time'][j]['parameter']['parameterName'])
-        # rain
-        bubble['body']['contents'][3]['contents'][3]['contents'][1]['text'] = Data[1]['time'][j]['parameter']['parameterName']
-        # comfort
-        bubble['body']['contents'][3]['contents'][4]['contents'][1]['text'] = Data[3]['time'][j]['parameter']['parameterName']
-        res['contents'].append(bubble)
-"""
+
 #保險
 def Insurance():
     response = requests.get( "https://www.phew.tw/article/cont/phewpoint/current/news/11217/2021051211217")
