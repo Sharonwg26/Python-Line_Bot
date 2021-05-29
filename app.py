@@ -152,7 +152,7 @@ def MakeWeb():
 def get(city):
     token = 'CWB-E5F5EFC0-30D2-43E6-B9C5-DDC64B24FA74'
     url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=' + token + '&format=JSON&locationName=' + str(city)
-    Data = requests.get(url)
+    Data = requests.get(url).json()
     Data = (json.dumps(Data.text,ensure_ascii=False))['records']['location'][0]['weatherElement']
     res = json.load(open('card.json','r',encoding='utf-8'))
     print(Data)
