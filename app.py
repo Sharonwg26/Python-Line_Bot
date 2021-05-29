@@ -222,7 +222,7 @@ def Insurance():
 #篩檢站
 def Screeningstation(city):
     response = requests.get("https://udn.com/news/story/122173/5472099")
-    city = '\n' + city
+    city1 = '\n' + city
     soup = BeautifulSoup(response.text, "html.parser")
     datas = soup.find_all("p")
     content=""
@@ -232,13 +232,13 @@ def Screeningstation(city):
         detail = data.getText()
         if len(detail) >= 50 or len(detail) < 2:
             continue
-        if detail == city:
+        if detail == city1:
             start = start + 1
             continue
         if start == 0:
             continue
         
-        if len(detail) == 4 and detail != city:
+        if len(detail) == 4 and detail != city1:
             break
         content += f"{detail}"
         
