@@ -151,12 +151,24 @@ def get(city):
     token = 'CWB-E5F5EFC0-30D2-43E6-B9C5-DDC64B24FA74'
     url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=' + token + '&format=JSON&locationName=' + str(city)
     Data = requests.get(url)
-    Data = (json.loads(Data.text,encoding='utf-8'))['records']['location'][0]['weatherElement']
-    res = [[] , [] , []]
+    Data = (json.load(Data.text))['records']['location'][0]['weatherElement']
+    res = json.load(open('card.json','r'))
+    print(Data)
     for j in range(3):
-        for i in Data:
-            res[j].append(i['time'][j])
-    return res
+        bubble = json.load(open('bubble.json','r',encoding='utf-8'))
+        # title
+        bubble['body']['contents'][0]['text'] = city + '未來 36 小時天氣'
+        # time
+        bubble['body']['contents'][1]['contents'][0]['text'] = '{} ~ {}'.format(Data[0]['time'][j]['startTime'][5:-3],Data[0]['time'][j]['endTime'][5:-3])
+        # weather
+        bubble['body']['contents'][3]['contents'][1]['contents'][1]['text'] = Data[0]['time'][j]['parameter']['parameterName']
+        # temp
+        bubble['body']['contents'][3]['contents'][2]['contents'][1]['text'] = '{}°C ~ {}°C'.format(Data[2]['time'][j]['parameter']['parameterName'],Data[4]['time'][j]['parameter']['parameterName'])
+        # rain
+        bubble['body']['contents'][3]['contents'][3]['contents'][1]['text'] = Data[1]['time'][j]['parameter']['parameterName']
+        # comfort
+        bubble['body']['contents'][3]['contents'][4]['contents'][1]['text'] = Data[3]['time'][j]['parameter']['parameterName']
+        res['contents'].append(bubble)
 
 #保險
 def Insurance():
@@ -420,25 +432,7 @@ def handle_message(event):
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 天氣 縣市"))
         else:
             res = get(city)
-            line_bot_api.reply_message(event.reply_token, TemplateSendMessage(
-               alt_text = city + '未來 36 小時天氣預測',
-               template = CarouselTemplate(
-                   columns = [
-                       CarouselColumn(
-                           thumbnail_image_url = 'https://static.newmobilelife.com/wp-content/uploads/2020/10/CuteWeather-1.png',
-                           title = '{} ~ {}'.format(res[0][0]['startTime'][5:-3],res[0][0]['endTime'][5:-3]),
-                           text = '天氣狀況 {}\n溫度 {} ~ {} °C\n降雨機率 {}'.format(data[0]['parameter']['parameterName'],data[2]['parameter']['parameterName'],data[4]['parameter']['parameterName'],data[1]['parameter']['parameterName']),
-                           actions = [
-                               URIAction(
-                                   label = '詳細內容',
-                                   uri = 'https://www.cwb.gov.tw/V8/C/W/County/index.html'
-                                   )
-                               ]
-                           )for data in res
-                       ]
-                   )
-               )
-            )
+            line_bot_api.reply_message(event.reply_token, FlexSendMessage(city + '未來 36 小時天氣預測',res)) 
     elif(cmd == 'location'):
         message=event.message.text
         city = event.message.address[5:8].replace('台','臺')
