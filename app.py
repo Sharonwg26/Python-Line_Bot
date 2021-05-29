@@ -325,6 +325,44 @@ def handle_message(event):
             TextSendMessage(text=temperature))
         
     elif cmd[0] == "教學網站":
+        carousel_template_message = TemplateSendMessage(
+            alt_text='ImageCarousel template',
+            template=ImageCarouselTemplate(
+                columns=[
+                    ImageCarouselColumn(
+                        image_url='https://news.idea-show.com/wp-content/uploads/2020/04/國立中央大學.jpg',
+                        action=URIAction(
+                            label='NCU Portal',
+                            uri='https://portal.ncu.edu.tw/'
+                        ),
+                    ),
+                    ImageCarouselColumn(
+                        image_url='https://ncueeclass.ncu.edu.tw/sysdata/attach/p.4//3d614763f288bfab5feebb6c36cb49bd.png',
+                        action=URIAction(
+                            label='NCU ee-class',
+                            uri='https://ncueeclass.ncu.edu.tw/'
+                        )
+                    ),
+                    ImageCarouselColumn(
+                        image_url='https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-05-512.png',
+                        action=URIAction(
+                            label='Google Meet',
+                            uri='https://meet.google.com/'
+                        )
+                    ),
+                    ImageCarouselColumn(
+                        image_url='https://www.pngarts.com/files/7/Zoom-Logo-PNG-Free-Download.png',
+                        action=URIAction(
+                            label='Zoom',
+                            uri='https://zoom.us/zh-tw/meetings.html'
+                        )
+                    )
+                ]
+            )
+        )
+        
+        line_bot_api.reply_message(event.reply_token,carousel_template_message)
+        '''
         Carousel_template = TemplateSendMessage(
             alt_text='Carousel template',
             template=CarouselTemplate(
@@ -368,6 +406,7 @@ def handle_message(event):
             )
         )
         line_bot_api.reply_message(event.reply_token,Carousel_template)
+        '''
         
         #WebMsg = MakeWeb()
         #SendMsg = [TextSendMessage(text=WebMsg),
