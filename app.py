@@ -151,7 +151,7 @@ def get(city):
     token = 'CWB-E5F5EFC0-30D2-43E6-B9C5-DDC64B24FA74'
     url = 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=' + token + '&format=JSON&locationName=' + str(city)
     Data = requests.get(url)
-    Data = (json.load(Data.text))['records']['location'][0]['weatherElement']
+    Data = (json.loads(Data.text))['records']['location'][0]['weatherElement']
     res = json.load(open('card.json','r'))
     print(Data)
     for j in range(3):
