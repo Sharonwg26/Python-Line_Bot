@@ -404,36 +404,15 @@ def handle_message(event):
         
         line_bot_api.reply_message(event.reply_token,carousel_template_message)
         
-    elif cmd[0] and len(cmd)==1:
-        WeatherMsg = "查詢格式為：天氣 氣象站\n \
-                查看氣象站：https://e-service.cwb.gov.tw/wdps/obs/state.htm"
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=WeatherMsg))
-        
     elif cmd[0] == "天氣":
         city = cmd[1]
         city = city.replace('台','臺')
         WeatherMsg = MakeWeather(city)
         if not WeatherMsg:
-            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為：天氣 氣象站"))
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為：天氣 氣象站\n \
+                查看氣象站：https://e-service.cwb.gov.tw/wdps/obs/state.htm"))
         else:
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text=WeatherMsg))
-    
-    '''
-    elif cmd[0] == "天氣":
-        if len(cmd) == 2:
-            city = cmd[1]
-            city = city.replace('台','臺')
-            WeatherMsg = MakeWeather(city)
-            if not WeatherMsg:
-                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為：天氣 氣象站\n \
-                        查看氣象站：https://e-service.cwb.gov.tw/wdps/obs/state.htm"))
-            else:
-                line_bot_api.reply_message(event.reply_token,TextSendMessage(text=WeatherMsg))
-        else:
-            WeatherMsg = "查詢格式為：天氣 氣象站\n \
-                查看氣象站：https://e-service.cwb.gov.tw/wdps/obs/state.htm"
-            line_bot_api.reply_message(event.reply_token,TextSendMessage(text=WeatherMsg))
-    '''
             
     elif cmd[0] == "保險":
         InsuranceInformation = Insurance()
