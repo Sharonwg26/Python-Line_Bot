@@ -409,8 +409,7 @@ def handle_message(event):
         city = city.replace('台','臺')
         WeatherMsg = MakeWeather(city)
         if not WeatherMsg:
-            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為：天氣 氣象站\n \
-                查看氣象站：https://e-service.cwb.gov.tw/wdps/obs/state.htm"))
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為：天氣 氣象站\n查看氣象站：https://e-service.cwb.gov.tw/wdps/obs/state.htm"))
         else:
             line_bot_api.reply_message(event.reply_token,TextSendMessage(text=WeatherMsg))
             
