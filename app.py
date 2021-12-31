@@ -12,9 +12,9 @@ import json
 app = Flask(__name__)
 
 # Channel Access Token
-line_bot_api = LineBotApi('OQqOlMprRqeiXhBHSymZ45X+i7WF74swYPh3nYpgcrVezoVQQ726Eqh2e0oBORceRt+brhEoSIC6W61E4H3bxGOg4Wp51V/XsG4QW4fIkPNrb/leolZ31igBf2WZd0cTnKS86EFUUWQy2TZNgHu6ugdB04t89/1O/w1cDnyilFU=')
+line_bot_api = LineBotApi('Your Channel Access Token')
 # Channel Secret
-handler = WebhookHandler('69a5b0ff850e58d346a7695507d98177')
+handler = WebhookHandler('Your Channel Secret')
 
 cities = ['基隆市','嘉義市','臺北市','台北市','嘉義縣','新北市','臺南市','台南市','桃園市','桃園縣','高雄市','新竹市','屏東縣','新竹縣','臺東縣','台東縣','苗栗縣','花蓮縣','臺中市','台中市','宜蘭縣','彰化縣','澎湖縣','南投縣','金門縣','雲林縣','連江縣']
 
